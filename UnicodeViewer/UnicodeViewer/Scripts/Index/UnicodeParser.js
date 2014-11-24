@@ -35,6 +35,7 @@
         var code = this.defaultCode;
         if (this.getInputLength(this.codeInput) > 0) {
             code = this.codeInput.val();
+            //if (code)
         }
         return code;
     };

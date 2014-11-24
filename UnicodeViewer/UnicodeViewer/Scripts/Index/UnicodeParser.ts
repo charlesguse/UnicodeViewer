@@ -29,7 +29,7 @@
         if (this.getInputLength(this.codeInput) > 0) {
             code = <string>this.codeInput.val();
 
-            if (code)
+            //if (code)
         }
         return code;
     }
