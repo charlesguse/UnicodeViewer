@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>⚗ - Unicode Alchemy</title>
 
     <link rel="stylesheet" type="text/css" href="Content/bootstrap.min.css" />
     
@@ -20,58 +20,54 @@
 
         .selectable {
             -webkit-user-select: auto; /* Chrome/Safari */
-            -moz-user-select: auto; /* Firefox */
-            -ms-user-select: auto; /* IE10+ */
+            -moz-user-select: all; /* Firefox */
+            -ms-user-select: element; /* IE10+ */
             /* Rules below not implemented in browsers yet */
             -o-user-select: auto;
-            user-select: auto;
+            user-select: all;
         }
     </style>
 </head>
-<body class="unselectable">
-    ⚗ ☠
-    <div class="container">
-        <div class="page-header text-center" id="banner">
-            <h1>I choose you, Unicode</h1>
-        </div>
-        <div class="col-lg-12 text-center">
-            <div class="jumbotron">
-                <h1 id="characterDisplay" class="selectable"></h1>
-                <div>Displaying with <span id="fontDisplay"></span></div>
+    <body class="unselectable">
+        <div class="container">
+            <div class="page-header text-center" id="banner">
+                <h1>Unicode Alchemy</h1>
             </div>
-            <form class="form-horizontal">
-                <fieldset>
-                    <div class="row">
-                        <div class="col-md-4"></div>
-                        <div class="form-group">
-                            <label class="col-lg-1 control-label">U+</label>
-                            <div class="col-lg-2">
-                                <input type="text" id="characterInput" class="form-control">
+            <div class="col-lg-12 text-center">
+                <div class="jumbotron">
+                    <h1 id="characterDisplay" class="selectable"></h1>
+                    <div>Displaying with <span id="fontDisplay"></span></div>
+                </div>
+                <form class="form-horizontal">
+                    <fieldset>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-lg-2"></div>
+                                <label class="col-lg-3 control-label">Hex or Unicode Character</label>
+                                <div class="col-lg-2">
+                                    <input type="text" id="characterInput" class="form-control">
+                                </div>
+                                <div class="col-lg-5"></div>
                             </div>
                         </div>
-                        <div class="col-md-4"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4"></div>
-                        <div class="form-group">
-                            <label class="col-lg-1 control-label">Font</label>
-                            <div class="col-lg-2">
-                                <input type="text" id="fontInput" class="form-control">
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-lg-4"></div>
+                                <label class="col-lg-1 control-label">Font</label>
+                                <div class="col-lg-2">
+                                    <input type="text" id="fontInput" class="form-control">
+                                </div>
+                                <div class="col-lg-5"></div>
                             </div>
                         </div>
-                        <div class="col-md-4"></div>
-                    </div>
-                </fieldset>
-            </form>
+                    </fieldset>
+                </form>
+            </div>
         </div>
-    </div>
-</body>
+    </body>
 </html>
 
 <script src="Scripts/jquery-2.1.1.min.js"></script>
 <script src="Scripts/bootstrap.min.js"></script>
 <!-- ReSharper disable once Html.PathError -->
 <script src="Scripts/Index/UnicodeParser.js"></script>
-<script>
-    //var parser = getUnicodeParser();
-</script>

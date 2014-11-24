@@ -1,0 +1,13 @@
+glob:*.suo
+glob:*.user
+glob:bin/*
+glob:obj/*
+glob:TestResults/*
+glob:*.ncrunchproject
+glob:*.ncrunchsolution
+glob:*.crunchsolution.cache
+glob:*.Debug.cachefile
+glob:*.Release.cachefile
+glob:packages/*
+glob:*.mdf
+glob:*.ldf
