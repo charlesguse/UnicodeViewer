@@ -1,28 +1,33 @@
 ﻿var UnicodeParser = (function () {
-    function UnicodeParser(codeInput, displayOutput, fontInput, fontOutput, defaultCode) {
-        this.codeInput = codeInput;
+    function UnicodeParser(hexInput, decInput, displayOutput, fontInput, fontOutput, defaultHexCode) {
+        this.hexInput = hexInput;
+        this.decInput = decInput;
         this.displayOutput = displayOutput;
         this.fontInput = fontInput;
         this.fontOutput = fontOutput;
-        this.defaultCode = defaultCode;
+        this.defaultHexCode = defaultHexCode;
         //private character: UnicodeCharacter;
         this.defaultFonts = "Times New Roman";
         this.initBindings();
 
-        codeInput.attr("placeholder", defaultCode);
+        hexInput.attr("placeholder", defaultHexCode);
         fontInput.attr("placeholder", this.defaultFonts.split(",")[0]);
         this.displayOutput.css("font-family", this.defaultFonts);
 
-        var defaultCharacter = UnicodeCharacter.getHex(this.defaultCode);
-
-        //var output = this.parseInput(defaultCode);
+        var defaultCharacter = UnicodeCharacter.getHex(this.defaultHexCode);
+        this.setDisplayFontFamily("");
         this.display(defaultCharacter);
     }
     UnicodeParser.prototype.initBindings = function () {
         var _this = this;
-        this.codeInput.on("keyup bind cut copy paste", function () {
+        this.hexInput.on("keyup bind cut copy paste", function () {
             return setTimeout(function () {
-                return _this.onCharacterInputKeyUp();
+                return _this.onHexInputKeyUp();
+            }, 100);
+        });
+        this.decInput.on("keyup bind cut copy paste", function () {
+            return setTimeout(function () {
+                return _this.onDecInputKeyUp();
             }, 100);
         });
         this.fontInput.on("keyup bind cut copy paste", function () {
@@ -32,22 +37,37 @@
         });
     };
 
-    UnicodeParser.prototype.onCharacterInputKeyUp = function () {
-        var character = this.parseCodeToUse();
-
-        //var output = this.parseInput(defaultCharacter);
+    UnicodeParser.prototype.onHexInputKeyUp = function () {
+        var character = this.parseHexCodeToUse();
         this.display(character);
     };
 
-    UnicodeParser.prototype.parseCodeToUse = function () {
-        var inputeLength = this.getInputLength(this.codeInput);
+    UnicodeParser.prototype.onDecInputKeyUp = function () {
+        var character = this.parseDecCodeToUse();
+        this.display(character);
+    };
+
+    UnicodeParser.prototype.parseHexCodeToUse = function () {
+        var inputeLength = this.getInputLength(this.hexInput);
 
         if (inputeLength === 1) {
-            return UnicodeCharacter.getText(this.codeInput.val());
-        } else if (this.getInputLength(this.codeInput) > 0) {
-            return UnicodeCharacter.getHex(this.codeInput.val());
+            return UnicodeCharacter.getText(this.hexInput.val());
+        } else if (this.getInputLength(this.hexInput) > 0) {
+            return UnicodeCharacter.getHex(this.hexInput.val());
         }
-        return UnicodeCharacter.getHex(this.defaultCode);
+        return UnicodeCharacter.getHex(this.defaultHexCode);
+    };
+
+    UnicodeParser.prototype.parseDecCodeToUse = function () {
+        var inputeLength = this.getInputLength(this.decInput);
+
+        if (inputeLength === 1) {
+            return UnicodeCharacter.getText(this.decInput.val());
+        } else if (this.getInputLength(this.decInput) > 0) {
+            return UnicodeCharacter.getDec(this.decInput.val());
+        }
+        return UnicodeCharacter.getHex(this.defaultHexCode);
+        //return UnicodeCharacter.getDec(this.defaultHexCode);
     };
 
     UnicodeParser.prototype.onFontInputKeyUp = function () {
@@ -64,7 +84,7 @@
             this.fontInput.parent().parent().addClass("has-error");
         }
 
-        this.onCharacterInputKeyUp();
+        this.onHexInputKeyUp();
     };
 
     UnicodeParser.prototype.getInputLength = function (element) {
@@ -74,9 +94,11 @@
     UnicodeParser.prototype.setDisplayFontFamily = function (newFont) {
         if (newFont === null || newFont === undefined || newFont.length === 0) {
             this.displayOutput.css("font-family", this.defaultFonts);
+            this.fontOutput.css("font-family", this.defaultFonts);
         }
 
         this.displayOutput.css("font-family", newFont + "," + this.defaultFonts);
+        this.fontOutput.css("font-family", newFont + "," + this.defaultFonts);
     };
 
     UnicodeParser.prototype.display = function (character) {
@@ -86,6 +108,12 @@
             } else {
                 //this.displayOutput.html(character.text + "<br/>");
                 this.displayOutput.html(character.text);
+
+                if (character.entryType == 1 /* Hex */) {
+                    this.decInput.val(character.dec.toString());
+                } else if (character.entryType == 0 /* Dec */) {
+                    this.hexInput.val(character.hex.toString());
+                }
             }
         } else {
             //this.displayOutput.html("U+" + character.hex + "<br/>");
@@ -187,8 +215,8 @@ var UnicodeCharacter = (function () {
         var character = new UnicodeCharacter();
 
         character._entryType = 0 /* Dec */;
-        character._hex = dec.toString(16);
-        character._dec = dec;
+        character._dec = parseInt(dec, 10);
+        character._hex = character.dec.toString(16);
         character._text = String.fromCharCode(character.dec);
 
         return character;
@@ -215,6 +243,6 @@ var parser = getUnicodeParser();
 
 function getUnicodeParser() {
     //return new UnicodeParser($("#characterInput"), $("#characterDisplay"), $("#fontInput"), $("#fontDisplay"), "2620");
-    return new UnicodeParser($("#characterInput"), $("#characterDisplay"), $("#fontInput"), $("#fontDisplay"), "2697");
+    return new UnicodeParser($("#hexInput"), $("#decInput"), $("#characterDisplay"), $("#fontInput"), $("#fontDisplay"), "2697");
 }
 //# sourceMappingURL=UnicodeParser.js.map
