@@ -10,7 +10,7 @@
         this.defaultFonts = "Times New Roman";
         this.initBindings();
 
-        hexInput.attr("placeholder", defaultHexCode);
+        //hexInput.attr("placeholder", defaultHexCode);
         fontInput.attr("placeholder", this.defaultFonts.split(",")[0]);
         this.displayOutput.css("font-family", this.defaultFonts);
 
@@ -109,10 +109,19 @@
                 //this.displayOutput.html(character.text + "<br/>");
                 this.displayOutput.html(character.text);
 
-                if (character.entryType == 1 /* Hex */) {
-                    this.decInput.val(character.dec.toString());
-                } else if (character.entryType == 0 /* Dec */) {
-                    this.hexInput.val(character.hex.toString());
+                var hexEmpty = this.getInputLength(this.hexInput) == 0;
+                var decEmpty = this.getInputLength(this.decInput) == 0;
+
+                if ((hexEmpty || decEmpty) && 1 /* Hex */ && character.hex == this.defaultHexCode) {
+                    this.hexInput.attr("placeholder", character.hex.toString());
+                    this.decInput.val("");
+                    this.decInput.attr("placeholder", character.dec.toString());
+                } else {
+                    if (character.entryType == 1 /* Hex */) {
+                        this.decInput.val(character.dec.toString());
+                    } else if (character.entryType == 0 /* Dec */) {
+                        this.hexInput.val(character.hex.toString());
+                    }
                 }
             }
         } else {
