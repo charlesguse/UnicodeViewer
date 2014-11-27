@@ -9,50 +9,59 @@
         <link rel="stylesheet" type="text/css" href="Content/bootstrap.min.css" />
     
         <!--http://stackoverflow.com/questions/6900124/make-some-text-unselectable-with-css-->
+        <!-- ReSharper disable CssBrowserCompatibility -->
         <style type="text/css">
             .unselectable {
+                /*-webkit-touch-callout: none;*/ /* Chrome/Safari */
                 -webkit-user-select: none; /* Chrome/Safari */
                 -moz-user-select: none; /* Firefox */
                 -ms-user-select: none; /* IE10+ */
-                /* Rules below not implemented in browsers yet */
-                -o-user-select: none;
+                /*-o-user-select: none;*/
                 user-select: none;
             }
 
             .selectable {
+                /*-webkit-touch-callout: default;*/ /* Chrome/Safari */
                 -webkit-user-select: auto; /* Chrome/Safari */
                 -moz-user-select: all; /* Firefox */
-                -ms-user-select: element; /* IE10+ */
-                /* Rules below not implemented in browsers yet */
-                -o-user-select: auto;
+                -ms-user-select: text; /* IE10+ */
+                /*-o-user-select: auto;*/
                 user-select: all;
             }
+
             h1 {
                 font-family: 'IM Fell English SC', serif;
             }
 
             p {
-                font-family: 'IM Fell English', serif;
+                font-size: 24px;
+                font-family: 'IM Fell English SC', serif;
+            }
+
+            label {
+                font-size: 20px;
+                font-family: 'IM Fell English SC', serif;
             }
 
         </style>
+        <!-- ReSharper restore CssBrowserCompatibility -->
     </head>
 <body class="unselectable">
     <div class="container">
         <div class="page-header text-center" id="banner">
             <h1>Unicode Alchemy</h1>
         </div>
-        <div class="col-lg-12 text-center">
+        <div class="text-center">
             <div class="jumbotron">
                 <h1 id="characterDisplay" class="selectable"></h1>
-                <div><p>Displaying with <span id="fontDisplay"></span></p></div>
+                <div id="fontDisplay"></div>
             </div>
             <form class="form-horizontal">
                 <fieldset>
                     <div class="row">
                         <div class="form-group">
                             <div class="col-lg-2"></div>
-                            <label class="col-lg-3 control-label">Hex or Unicode Character</label>
+                            <label class="col-lg-3 control-label">Hex</label>
                             <div class="col-lg-2">
                                 <input type="text" id="hexInput" class="form-control">
                             </div>
@@ -62,7 +71,7 @@
                     <div class="row">
                         <div class="form-group">
                             <div class="col-lg-2"></div>
-                            <label class="col-lg-3 control-label">Dec or Unicode Character</label>
+                            <label class="col-lg-3 control-label">Dec</label>
                             <div class="col-lg-2">
                                 <input type="text" id="decInput" class="form-control">
                             </div>
@@ -82,7 +91,7 @@
                     <div class=" row">
                         <div class="col-lg-3"></div>
                         <div class="col-lg-6">
-                            <p style="font-size: 20px">
+                            <p>
                                 Ever look at a character map and realize you don't have a quick way to get the text version of a symbol?
                                 This is here to help. It will also convert unicode characters back into hex.
                             </p>

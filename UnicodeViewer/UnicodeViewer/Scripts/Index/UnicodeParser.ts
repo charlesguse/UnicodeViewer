@@ -1,170 +1,222 @@
 ﻿class UnicodeParser {
-    //private character: UnicodeCharacter;
-    private defaultFonts = "Times New Roman";
-
-
-    constructor(private hexInput: JQuery, private decInput: JQuery, private displayOutput: JQuery, private fontInput: JQuery, private fontOutput: JQuery, private defaultHexCode: string) {
+    constructor(private input: InputHandler, private display: DisplayHandler) {
         this.initBindings();
+        var defaultCharacter = this.input.getDefault();
+        this.display.display(defaultCharacter);
 
-        //hexInput.attr("placeholder", defaultHexCode);
-        fontInput.attr("placeholder", this.defaultFonts.split(",")[0]);
-        this.displayOutput.css("font-family", this.defaultFonts);
-
-        var defaultCharacter = UnicodeCharacter.getHex(this.defaultHexCode);
-        this.setDisplayFontFamily("");
-        this.display(defaultCharacter);
+        var font = this.input.getFont();
+        this.display.displayFont(font);
     }
 
     initBindings() {
-        this.hexInput.on("keyup bind cut copy paste", () => setTimeout(() => this.onHexInputKeyUp(), 100));
-        this.decInput.on("keyup bind cut copy paste", () => setTimeout(() => this.onDecInputKeyUp(), 100));
-        this.fontInput.on("keyup bind cut copy paste", () => setTimeout(() => this.onFontInputKeyUp(), 100));
+        this.input.bindHexInput(() => this.onHexInputKeyUp());
+        this.input.bindDecInput(() => this.onDecInputKeyUp());
+        this.input.bindFontInput(() => this.onFontInputKeyUp());
     }
 
     onHexInputKeyUp() {
-        var character = this.parseHexCodeToUse();
-        this.display(character);
+        var character = this.input.parseHexCodeToUse();
+        this.display.display(character);
     }
 
     onDecInputKeyUp() {
-        var character = this.parseDecCodeToUse();
-        this.display(character);
+        var character = this.input.parseDecCodeToUse();
+        this.display.display(character);
+    }
+
+    onFontInputKeyUp() {
+        var font = this.input.getFont();
+        this.display.displayFont(font);
+    }
+}
+
+class InputHandler {
+    private defaultHexCode = "2697";
+
+    constructor(public hexInput: JQuery, public decInput: JQuery, public fontInput: JQuery) {
+
+    }
+
+    public getDefault() {
+        return UnicodeCharacter.getDefault(this.defaultHexCode);
+    }
+
+    public bindHexInput(callback: Function) {
+        this.bindInput(this.hexInput, callback);
+    }
+
+    public bindDecInput(callback: Function) {
+        this.bindInput(this.decInput, callback);
+    }
+
+    public bindFontInput(callback: Function) {
+        this.bindInput(this.fontInput, callback);
+    }
+
+    private bindInput(input: JQuery, callback: Function) {
+        input.on("keyup bind cut copy paste", () => setTimeout(() => callback(), 100));
     }
 
     parseHexCodeToUse() {
         var inputeLength = this.getInputLength(this.hexInput);
 
-        if (inputeLength === 1) {
-            return UnicodeCharacter.getText(this.hexInput.val());
-        } else if (this.getInputLength(this.hexInput) > 0) {
-            return UnicodeCharacter.getHex(this.hexInput.val());
+        if (inputeLength === 0) {
+            return UnicodeCharacter.getDefault(this.defaultHexCode);
+        } else {
+            var character = UnicodeCharacter.getHex(this.hexInput.val());
+            return character;
         }
-        return UnicodeCharacter.getHex(this.defaultHexCode);
     }
 
     parseDecCodeToUse() {
         var inputeLength = this.getInputLength(this.decInput);
 
-        if (inputeLength === 1) {
-            return UnicodeCharacter.getText(this.decInput.val());
-        } else if (this.getInputLength(this.decInput) > 0) {
-            return UnicodeCharacter.getDec(this.decInput.val());
-        }
-        return UnicodeCharacter.getHex(this.defaultHexCode);
-        //return UnicodeCharacter.getDec(this.defaultHexCode);
-    }
-
-    onFontInputKeyUp() {
-        this.setDisplayFontFamily(this.fontInput.val());
-
-        if (this.getInputLength(this.fontInput) == 0) {
-            this.fontInput.parent().parent().removeClass("has-error");
-            this.fontInput.parent().parent().removeClass("has-success");
-        } else if (this.doesFontExist(this.fontInput.val())) {
-            this.fontInput.parent().parent().removeClass("has-error");
-            this.fontInput.parent().parent().addClass("has-success");
+        if (inputeLength === 0) {
+            return UnicodeCharacter.getDefault(this.defaultHexCode);
         } else {
-            this.fontInput.parent().parent().removeClass("has-success");
-            this.fontInput.parent().parent().addClass("has-error");
+            var character = UnicodeCharacter.getDec(this.decInput.val());
+            return character;
         }
-
-        this.onHexInputKeyUp();
     }
 
     getInputLength(element: JQuery) {
         return (<string>element.val()).length;
     }
 
-    setDisplayFontFamily(newFont: string) {
-        if (newFont === null ||
-            newFont === undefined ||
-            newFont.length === 0) {
-            this.displayOutput.css("font-family", this.defaultFonts);
-            this.fontOutput.css("font-family", this.defaultFonts);
-        }
 
-        this.displayOutput.css("font-family", newFont + "," + this.defaultFonts);
-        this.fontOutput.css("font-family", newFont + "," + this.defaultFonts);
+    getFont(): Font {
+        return new Font(this.fontInput);
     }
+}
+
+class DisplayHandler {
+    constructor(private displayOutput: JQuery, private fontOutput: JQuery, private input: InputHandler) { }
 
     display(character: UnicodeCharacter) {
-        if (character.entryType == EntryType.Hex || character.entryType == EntryType.Dec) {
-            if (!character.dec) {
-                this.displayOutput.html("<div style='font-size: 36px'> Enter a single unicode character or Hexidecimal (0-f)</div>");
-            } else {
-                //this.displayOutput.html(character.text + "<br/>");
-                this.displayOutput.html(character.text);
 
-                var hexEmpty = this.getInputLength(this.hexInput) == 0;
-                var decEmpty = this.getInputLength(this.decInput) == 0;
-
-                if ((hexEmpty || decEmpty) && EntryType.Hex && character.hex == this.defaultHexCode) {
-                    this.hexInput.attr("placeholder", character.hex.toString());
-                    this.decInput.val("");
-                    this.decInput.attr("placeholder", character.dec.toString());
-                } else {
-                    if (character.entryType == EntryType.Hex) {
-                        this.decInput.val(character.dec.toString());
-                    } else if (character.entryType == EntryType.Dec) {
-                        this.hexInput.val(character.hex.toString());
-                    }
-                }
-
-            }
+        if (character.entryType === EntryType.Default) {
+            this.input.hexInput.attr("placeholder", character.hex);
+            this.input.decInput.attr("placeholder", character.dec);
+            this.input.hexInput.val("");
+            this.input.decInput.val("");
         } else {
-            //this.displayOutput.html("U+" + character.hex + "<br/>");
-            this.displayOutput.html("U+" + character.hex);
+            this.input.hexInput.val(character.hex);
+            this.input.decInput.val(character.dec);
+
+            this.checkInputsForErrors(character);
         }
-        this.fontOutput.html(this.getDisplayOutputFont());
+
+        this.displayOutput.html(character.text);
     }
 
-    getDisplayOutputFont() {
-        var fonts = this.displayOutput.css("font-family").split(",");
+    displayFont(font: Font) {
+        this.displayOutput.css("font-family", font.font);
+        this.fontOutput.css("font-family", font.font);
 
-        var fontUsed: string = "";
-
-        for (var i = 0; i < fonts.length; i++) {
-            if (this.doesFontExist(fonts[i])) {
-                fontUsed = fonts[i];
-                break;
-            }
+        var fonts = font.font.split(",");
+        if (fonts.length > 1) {
+            this.fontOutput.html("Attempting to display with " + fonts[0] +
+                ". Your browser will use a fallback if " + fonts[0] + " does not exist.");
+        } else {
+            this.fontOutput.html("<br/>");
         }
-        return fontUsed;
+
+        this.checkFontInputForError(font);
     }
 
-    doesFontExist(font: string) {
-        if (font == "Comic Sans MS" || font == "'Comic Sans MS'") {
-            return true;
+    checkFontInputForError(font: Font) {
+        this.checkForError(this.input.fontInput.parent().parent(), font.hasError);
+    }
+
+
+    checkInputsForErrors(character: UnicodeCharacter) {
+        if (character.entryType === EntryType.Hex) {
+            this.checkForError(this.input.hexInput.parent().parent(), character.hasError);
+        } else if (character.entryType === EntryType.Dec) {
+            this.checkForError(this.input.decInput.parent().parent(), character.hasError);
         }
+    }
 
-        var clone = $('<span>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890</span>').css({ 'font-family': "Comic Sans MS", 'font-size': '100px', 'display': 'inline', 'visibility': 'hidden' }).appendTo('body');
-        var dummy = $('<span>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890</span>').css({ 'font-family': font + ",'Comic Sans MS'", 'font-size': '100px', 'display': 'inline', 'visibility': 'hidden' }).appendTo('body');
-        var exists: boolean = false;
-        var difference = clone.width() - dummy.width();
-
-        if (difference != 0) {
-            exists = true;
+    checkForError(input: JQuery, error: boolean) {
+        if (error) {
+            input.addClass("has-error");
+        } else {
+            input.removeClass("has-error");
         }
-        clone.remove();
-        dummy.remove();
-
-        return exists;
     }
 }
 
 enum EntryType {
     Dec,
     Hex,
-    Text
+    Text,
+    Default,
+}
+
+class Font {
+    private defaultFonts = "Segoe UI Symbol";// ", Lucida Grande, Unifont";
+    // reSharper disable InconsistentNaming
+    private _font: string
+    private _hasError: boolean
+    // reSharper restore InconsistentNaming
+
+    public get font() {
+        return this._font;
+    }
+
+    public get hasError() {
+        return this._hasError;
+    }
+
+    constructor(fontInput: JQuery) {
+        var fontLength = this.getInputLength(fontInput);
+        var fontExists = this.doesFontExist(fontInput.val());
+
+        this._font = this.defaultFonts;
+        if (fontLength > 0 && fontExists) {
+            this._font = fontInput.val() + "," + this.defaultFonts;
+        }
+        this._hasError = fontLength > 0 && !fontExists;
+    }
+
+    doesFontExist(font: string) {
+        if (font == null || font.length === 0) {
+            return false;
+        } else if (font === "Comic Sans MS" || font === "'Comic Sans MS'") {
+            return true;
+        }
+
+        var base = $("<span>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890</span>")
+            .css({ "font-family": "Comic Sans MS", "font-size": "100px", "display": "inline", "visibility": "hidden" })
+            .appendTo("body");
+        var test = $("<span>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890</span>")
+            .css({ "font-family": font + ",'Comic Sans MS'", "font-size": "100px", "display": "inline", "visibility": "hidden" })
+            .appendTo("body");
+        var exists: boolean = false;
+        var difference = base.width() - test.width();
+
+        if (difference !== 0) {
+            exists = true;
+        }
+        base.remove();
+        test.remove();
+
+        return exists;
+    }
+
+    getInputLength(element: JQuery) {
+        return (<string>element.val()).length;
+    }
 }
 
 class UnicodeCharacter {
-    // ReSharper disable InconsistentNaming
-    private _dec: number
+    // reSharper disable InconsistentNaming
+    private _dec: string
     private _hex: string
     private _text: string
     private _entryType: EntryType
-    // ReSharper restore InconsistentNaming
+    private _hasError: boolean
+    // reSharper restore InconsistentNaming
 
     public get dec() {
         return this._dec;
@@ -182,13 +234,24 @@ class UnicodeCharacter {
         return this._entryType;
     }
 
+    public get hasError() {
+        return this._hasError;
+    }
+
+    static getDefault(hex: string) {
+        var character = this.getHex(hex);
+        character._entryType = EntryType.Default;
+        return character;
+    }
+
     static getHex(hex: string) {
         var character = new UnicodeCharacter();
 
         character._entryType = EntryType.Hex;
-        character._dec = parseInt(hex, 16);
         character._hex = hex;
-        character._text = String.fromCharCode(character.dec);
+        character._dec = parseInt(hex, 16).toString();
+        character._text = String.fromCharCode(parseInt(character.dec, 10));
+        character._hasError = !/^[0-9A-F]*$/i.test(hex);
 
         return character;
     }
@@ -197,9 +260,10 @@ class UnicodeCharacter {
         var character = new UnicodeCharacter();
 
         character._entryType = EntryType.Dec;
-        character._dec = parseInt(dec, 10);
-        character._hex = character.dec.toString(16);
-        character._text = String.fromCharCode(character.dec);
+        character._hex = parseInt(dec, 10).toString(16);
+        character._dec = dec;
+        character._text = String.fromCharCode(parseInt(character.dec, 10));
+        character._hasError = !/^[0-9]*$/i.test(dec);
 
         return character;
     }
@@ -208,21 +272,21 @@ class UnicodeCharacter {
         var character = new UnicodeCharacter();
 
         character._entryType = EntryType.Text;
-        if (text.length == 1) {
-            character._dec = text.charCodeAt(0);
-        } else {
-            character._dec = NaN;
-        }
-        character._hex = character.dec.toString(16);
+        character._hex = text.charCodeAt(0).toString(16);
+        character._dec = text.charCodeAt(0).toString();
         character._text = text;
+        character._hasError = text.length > 1;
 
         return character;
     }
 }
 
-var parser = getUnicodeParser();
+getUnicodeParser();
 
 function getUnicodeParser() {
-    //return new UnicodeParser($("#characterInput"), $("#characterDisplay"), $("#fontInput"), $("#fontDisplay"), "2620");
-    return new UnicodeParser($("#hexInput"), $("#decInput"), $("#characterDisplay"), $("#fontInput"), $("#fontDisplay"), "2697");
+    "use strict";
+    var input = new InputHandler($("#hexInput"), $("#decInput"), $("#fontInput"));
+    var display = new DisplayHandler($("#characterDisplay"), $("#fontDisplay"), input);
+
+    return new UnicodeParser(input, display);
 }

@@ -1,169 +1,163 @@
 ﻿var UnicodeParser = (function () {
-    function UnicodeParser(hexInput, decInput, displayOutput, fontInput, fontOutput, defaultHexCode) {
-        this.hexInput = hexInput;
-        this.decInput = decInput;
-        this.displayOutput = displayOutput;
-        this.fontInput = fontInput;
-        this.fontOutput = fontOutput;
-        this.defaultHexCode = defaultHexCode;
-        //private character: UnicodeCharacter;
-        this.defaultFonts = "Times New Roman";
+    function UnicodeParser(input, display) {
+        this.input = input;
+        this.display = display;
         this.initBindings();
+        var defaultCharacter = this.input.getDefault();
+        this.display.display(defaultCharacter);
 
-        //hexInput.attr("placeholder", defaultHexCode);
-        fontInput.attr("placeholder", this.defaultFonts.split(",")[0]);
-        this.displayOutput.css("font-family", this.defaultFonts);
-
-        var defaultCharacter = UnicodeCharacter.getHex(this.defaultHexCode);
-        this.setDisplayFontFamily("");
-        this.display(defaultCharacter);
+        var font = this.input.getFont();
+        this.display.displayFont(font);
     }
     UnicodeParser.prototype.initBindings = function () {
         var _this = this;
-        this.hexInput.on("keyup bind cut copy paste", function () {
-            return setTimeout(function () {
-                return _this.onHexInputKeyUp();
-            }, 100);
+        this.input.bindHexInput(function () {
+            return _this.onHexInputKeyUp();
         });
-        this.decInput.on("keyup bind cut copy paste", function () {
-            return setTimeout(function () {
-                return _this.onDecInputKeyUp();
-            }, 100);
+        this.input.bindDecInput(function () {
+            return _this.onDecInputKeyUp();
         });
-        this.fontInput.on("keyup bind cut copy paste", function () {
-            return setTimeout(function () {
-                return _this.onFontInputKeyUp();
-            }, 100);
+        this.input.bindFontInput(function () {
+            return _this.onFontInputKeyUp();
         });
     };
 
     UnicodeParser.prototype.onHexInputKeyUp = function () {
-        var character = this.parseHexCodeToUse();
-        this.display(character);
+        var character = this.input.parseHexCodeToUse();
+        this.display.display(character);
     };
 
     UnicodeParser.prototype.onDecInputKeyUp = function () {
-        var character = this.parseDecCodeToUse();
-        this.display(character);
-    };
-
-    UnicodeParser.prototype.parseHexCodeToUse = function () {
-        var inputeLength = this.getInputLength(this.hexInput);
-
-        if (inputeLength === 1) {
-            return UnicodeCharacter.getText(this.hexInput.val());
-        } else if (this.getInputLength(this.hexInput) > 0) {
-            return UnicodeCharacter.getHex(this.hexInput.val());
-        }
-        return UnicodeCharacter.getHex(this.defaultHexCode);
-    };
-
-    UnicodeParser.prototype.parseDecCodeToUse = function () {
-        var inputeLength = this.getInputLength(this.decInput);
-
-        if (inputeLength === 1) {
-            return UnicodeCharacter.getText(this.decInput.val());
-        } else if (this.getInputLength(this.decInput) > 0) {
-            return UnicodeCharacter.getDec(this.decInput.val());
-        }
-        return UnicodeCharacter.getHex(this.defaultHexCode);
-        //return UnicodeCharacter.getDec(this.defaultHexCode);
+        var character = this.input.parseDecCodeToUse();
+        this.display.display(character);
     };
 
     UnicodeParser.prototype.onFontInputKeyUp = function () {
-        this.setDisplayFontFamily(this.fontInput.val());
+        var font = this.input.getFont();
+        this.display.displayFont(font);
+    };
+    return UnicodeParser;
+})();
 
-        if (this.getInputLength(this.fontInput) == 0) {
-            this.fontInput.parent().parent().removeClass("has-error");
-            this.fontInput.parent().parent().removeClass("has-success");
-        } else if (this.doesFontExist(this.fontInput.val())) {
-            this.fontInput.parent().parent().removeClass("has-error");
-            this.fontInput.parent().parent().addClass("has-success");
-        } else {
-            this.fontInput.parent().parent().removeClass("has-success");
-            this.fontInput.parent().parent().addClass("has-error");
-        }
-
-        this.onHexInputKeyUp();
+var InputHandler = (function () {
+    function InputHandler(hexInput, decInput, fontInput) {
+        this.hexInput = hexInput;
+        this.decInput = decInput;
+        this.fontInput = fontInput;
+        this.defaultHexCode = "2697";
+    }
+    InputHandler.prototype.getDefault = function () {
+        return UnicodeCharacter.getDefault(this.defaultHexCode);
     };
 
-    UnicodeParser.prototype.getInputLength = function (element) {
+    InputHandler.prototype.bindHexInput = function (callback) {
+        this.bindInput(this.hexInput, callback);
+    };
+
+    InputHandler.prototype.bindDecInput = function (callback) {
+        this.bindInput(this.decInput, callback);
+    };
+
+    InputHandler.prototype.bindFontInput = function (callback) {
+        this.bindInput(this.fontInput, callback);
+    };
+
+    InputHandler.prototype.bindInput = function (input, callback) {
+        input.on("keyup bind cut copy paste", function () {
+            return setTimeout(function () {
+                return callback();
+            }, 100);
+        });
+    };
+
+    InputHandler.prototype.parseHexCodeToUse = function () {
+        var inputeLength = this.getInputLength(this.hexInput);
+
+        if (inputeLength === 0) {
+            return UnicodeCharacter.getDefault(this.defaultHexCode);
+        } else {
+            var character = UnicodeCharacter.getHex(this.hexInput.val());
+            return character;
+        }
+    };
+
+    InputHandler.prototype.parseDecCodeToUse = function () {
+        var inputeLength = this.getInputLength(this.decInput);
+
+        if (inputeLength === 0) {
+            return UnicodeCharacter.getDefault(this.defaultHexCode);
+        } else {
+            var character = UnicodeCharacter.getDec(this.decInput.val());
+            return character;
+        }
+    };
+
+    InputHandler.prototype.getInputLength = function (element) {
         return element.val().length;
     };
 
-    UnicodeParser.prototype.setDisplayFontFamily = function (newFont) {
-        if (newFont === null || newFont === undefined || newFont.length === 0) {
-            this.displayOutput.css("font-family", this.defaultFonts);
-            this.fontOutput.css("font-family", this.defaultFonts);
-        }
-
-        this.displayOutput.css("font-family", newFont + "," + this.defaultFonts);
-        this.fontOutput.css("font-family", newFont + "," + this.defaultFonts);
+    InputHandler.prototype.getFont = function () {
+        return new Font(this.fontInput);
     };
+    return InputHandler;
+})();
 
-    UnicodeParser.prototype.display = function (character) {
-        if (character.entryType == 1 /* Hex */ || character.entryType == 0 /* Dec */) {
-            if (!character.dec) {
-                this.displayOutput.html("<div style='font-size: 36px'> Enter a single unicode character or Hexidecimal (0-f)</div>");
-            } else {
-                //this.displayOutput.html(character.text + "<br/>");
-                this.displayOutput.html(character.text);
-
-                var hexEmpty = this.getInputLength(this.hexInput) == 0;
-                var decEmpty = this.getInputLength(this.decInput) == 0;
-
-                if ((hexEmpty || decEmpty) && 1 /* Hex */ && character.hex == this.defaultHexCode) {
-                    this.hexInput.attr("placeholder", character.hex.toString());
-                    this.decInput.val("");
-                    this.decInput.attr("placeholder", character.dec.toString());
-                } else {
-                    if (character.entryType == 1 /* Hex */) {
-                        this.decInput.val(character.dec.toString());
-                    } else if (character.entryType == 0 /* Dec */) {
-                        this.hexInput.val(character.hex.toString());
-                    }
-                }
-            }
+var DisplayHandler = (function () {
+    function DisplayHandler(displayOutput, fontOutput, input) {
+        this.displayOutput = displayOutput;
+        this.fontOutput = fontOutput;
+        this.input = input;
+    }
+    DisplayHandler.prototype.display = function (character) {
+        if (character.entryType === 3 /* Default */) {
+            this.input.hexInput.attr("placeholder", character.hex);
+            this.input.decInput.attr("placeholder", character.dec);
+            this.input.hexInput.val("");
+            this.input.decInput.val("");
         } else {
-            //this.displayOutput.html("U+" + character.hex + "<br/>");
-            this.displayOutput.html("U+" + character.hex);
+            this.input.hexInput.val(character.hex);
+            this.input.decInput.val(character.dec);
+
+            this.checkInputsForErrors(character);
         }
-        this.fontOutput.html(this.getDisplayOutputFont());
+
+        this.displayOutput.html(character.text);
     };
 
-    UnicodeParser.prototype.getDisplayOutputFont = function () {
-        var fonts = this.displayOutput.css("font-family").split(",");
+    DisplayHandler.prototype.displayFont = function (font) {
+        this.displayOutput.css("font-family", font.font);
+        this.fontOutput.css("font-family", font.font);
 
-        var fontUsed = "";
-
-        for (var i = 0; i < fonts.length; i++) {
-            if (this.doesFontExist(fonts[i])) {
-                fontUsed = fonts[i];
-                break;
-            }
+        var fonts = font.font.split(",");
+        if (fonts.length > 1) {
+            this.fontOutput.html("Attempting to display with " + fonts[0] + ". Your browser will use a fallback if " + fonts[0] + " does not exist.");
+        } else {
+            this.fontOutput.html("<br/>");
         }
-        return fontUsed;
+
+        this.checkFontInputForError(font);
     };
 
-    UnicodeParser.prototype.doesFontExist = function (font) {
-        if (font == "Comic Sans MS" || font == "'Comic Sans MS'") {
-            return true;
-        }
-
-        var clone = $('<span>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890</span>').css({ 'font-family': "Comic Sans MS", 'font-size': '100px', 'display': 'inline', 'visibility': 'hidden' }).appendTo('body');
-        var dummy = $('<span>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890</span>').css({ 'font-family': font + ",'Comic Sans MS'", 'font-size': '100px', 'display': 'inline', 'visibility': 'hidden' }).appendTo('body');
-        var exists = false;
-        var difference = clone.width() - dummy.width();
-
-        if (difference != 0) {
-            exists = true;
-        }
-        clone.remove();
-        dummy.remove();
-
-        return exists;
+    DisplayHandler.prototype.checkFontInputForError = function (font) {
+        this.checkForError(this.input.fontInput.parent().parent(), font.hasError);
     };
-    return UnicodeParser;
+
+    DisplayHandler.prototype.checkInputsForErrors = function (character) {
+        if (character.entryType === 1 /* Hex */) {
+            this.checkForError(this.input.hexInput.parent().parent(), character.hasError);
+        } else if (character.entryType === 0 /* Dec */) {
+            this.checkForError(this.input.decInput.parent().parent(), character.hasError);
+        }
+    };
+
+    DisplayHandler.prototype.checkForError = function (input, error) {
+        if (error) {
+            input.addClass("has-error");
+        } else {
+            input.removeClass("has-error");
+        }
+    };
+    return DisplayHandler;
 })();
 
 var EntryType;
@@ -171,13 +165,70 @@ var EntryType;
     EntryType[EntryType["Dec"] = 0] = "Dec";
     EntryType[EntryType["Hex"] = 1] = "Hex";
     EntryType[EntryType["Text"] = 2] = "Text";
+    EntryType[EntryType["Default"] = 3] = "Default";
 })(EntryType || (EntryType = {}));
+
+var Font = (function () {
+    function Font(fontInput) {
+        this.defaultFonts = "Segoe UI Symbol";
+        var fontLength = this.getInputLength(fontInput);
+        var fontExists = this.doesFontExist(fontInput.val());
+
+        this._font = this.defaultFonts;
+        if (fontLength > 0 && fontExists) {
+            this._font = fontInput.val() + "," + this.defaultFonts;
+        }
+        this._hasError = fontLength > 0 && !fontExists;
+    }
+    Object.defineProperty(Font.prototype, "font", {
+        // reSharper restore InconsistentNaming
+        get: function () {
+            return this._font;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(Font.prototype, "hasError", {
+        get: function () {
+            return this._hasError;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Font.prototype.doesFontExist = function (font) {
+        if (font == null || font.length === 0) {
+            return false;
+        } else if (font === "Comic Sans MS" || font === "'Comic Sans MS'") {
+            return true;
+        }
+
+        var base = $("<span>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890</span>").css({ "font-family": "Comic Sans MS", "font-size": "100px", "display": "inline", "visibility": "hidden" }).appendTo("body");
+        var test = $("<span>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890</span>").css({ "font-family": font + ",'Comic Sans MS'", "font-size": "100px", "display": "inline", "visibility": "hidden" }).appendTo("body");
+        var exists = false;
+        var difference = base.width() - test.width();
+
+        if (difference !== 0) {
+            exists = true;
+        }
+        base.remove();
+        test.remove();
+
+        return exists;
+    };
+
+    Font.prototype.getInputLength = function (element) {
+        return element.val().length;
+    };
+    return Font;
+})();
 
 var UnicodeCharacter = (function () {
     function UnicodeCharacter() {
     }
     Object.defineProperty(UnicodeCharacter.prototype, "dec", {
-        // ReSharper restore InconsistentNaming
+        // reSharper restore InconsistentNaming
         get: function () {
             return this._dec;
         },
@@ -209,13 +260,28 @@ var UnicodeCharacter = (function () {
         configurable: true
     });
 
+    Object.defineProperty(UnicodeCharacter.prototype, "hasError", {
+        get: function () {
+            return this._hasError;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    UnicodeCharacter.getDefault = function (hex) {
+        var character = this.getHex(hex);
+        character._entryType = 3 /* Default */;
+        return character;
+    };
+
     UnicodeCharacter.getHex = function (hex) {
         var character = new UnicodeCharacter();
 
         character._entryType = 1 /* Hex */;
-        character._dec = parseInt(hex, 16);
         character._hex = hex;
-        character._text = String.fromCharCode(character.dec);
+        character._dec = parseInt(hex, 16).toString();
+        character._text = String.fromCharCode(parseInt(character.dec, 10));
+        character._hasError = !/^[0-9A-F]*$/i.test(hex);
 
         return character;
     };
@@ -224,9 +290,10 @@ var UnicodeCharacter = (function () {
         var character = new UnicodeCharacter();
 
         character._entryType = 0 /* Dec */;
-        character._dec = parseInt(dec, 10);
-        character._hex = character.dec.toString(16);
-        character._text = String.fromCharCode(character.dec);
+        character._hex = parseInt(dec, 10).toString(16);
+        character._dec = dec;
+        character._text = String.fromCharCode(parseInt(character.dec, 10));
+        character._hasError = !/^[0-9]*$/i.test(dec);
 
         return character;
     };
@@ -235,23 +302,23 @@ var UnicodeCharacter = (function () {
         var character = new UnicodeCharacter();
 
         character._entryType = 2 /* Text */;
-        if (text.length == 1) {
-            character._dec = text.charCodeAt(0);
-        } else {
-            character._dec = NaN;
-        }
-        character._hex = character.dec.toString(16);
+        character._hex = text.charCodeAt(0).toString(16);
+        character._dec = text.charCodeAt(0).toString();
         character._text = text;
+        character._hasError = text.length > 1;
 
         return character;
     };
     return UnicodeCharacter;
 })();
 
-var parser = getUnicodeParser();
+getUnicodeParser();
 
 function getUnicodeParser() {
-    //return new UnicodeParser($("#characterInput"), $("#characterDisplay"), $("#fontInput"), $("#fontDisplay"), "2620");
-    return new UnicodeParser($("#hexInput"), $("#decInput"), $("#characterDisplay"), $("#fontInput"), $("#fontDisplay"), "2697");
+    "use strict";
+    var input = new InputHandler($("#hexInput"), $("#decInput"), $("#fontInput"));
+    var display = new DisplayHandler($("#characterDisplay"), $("#fontDisplay"), input);
+
+    return new UnicodeParser(input, display);
 }
 //# sourceMappingURL=UnicodeParser.js.map
