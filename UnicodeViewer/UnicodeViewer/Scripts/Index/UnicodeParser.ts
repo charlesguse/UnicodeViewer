@@ -11,6 +11,7 @@
     initBindings() {
         this.input.bindHexInput(() => this.onHexInputKeyUp());
         this.input.bindDecInput(() => this.onDecInputKeyUp());
+        this.input.bindUniInput(() => this.onUniInputKeyUp());
         this.input.bindFontInput(() => this.onFontInputKeyUp());
     }
 
@@ -24,6 +25,11 @@
         this.display.display(character);
     }
 
+    onUniInputKeyUp() {
+        var character = this.input.parseUnicodeToUse();
+        this.display.display(character);
+    }
+
     onFontInputKeyUp() {
         var font = this.input.getFont();
         this.display.displayFont(font);
@@ -33,7 +39,7 @@
 class InputHandler {
     private defaultHexCode = "2697";
 
-    constructor(public hexInput: JQuery, public decInput: JQuery, public fontInput: JQuery) {
+    constructor(public hexInput: JQuery, public decInput: JQuery, public uniInput: JQuery, public fontInput: JQuery) {
 
     }
 
@@ -47,6 +53,10 @@ class InputHandler {
 
     public bindDecInput(callback: Function) {
         this.bindInput(this.decInput, callback);
+    }
+
+    public bindUniInput(callback: Function) {
+        this.bindInput(this.uniInput, callback);
     }
 
     public bindFontInput(callback: Function) {
@@ -79,6 +89,17 @@ class InputHandler {
         }
     }
 
+    parseUnicodeToUse() {
+        var inputeLength = this.getInputLength(this.uniInput);
+
+        if (inputeLength === 0) {
+            return UnicodeCharacter.getDefault(this.defaultHexCode);
+        } else {
+            var character = UnicodeCharacter.getText(this.uniInput.val());
+            return character;
+        }
+    }
+
     getInputLength(element: JQuery) {
         return (<string>element.val()).length;
     }
@@ -97,19 +118,23 @@ class DisplayHandler {
         if (character.entryType === EntryType.Default) {
             this.input.hexInput.attr("placeholder", character.hex);
             this.input.decInput.attr("placeholder", character.dec);
+            this.input.uniInput.attr("placeholder", character.text);
             this.input.hexInput.val("");
             this.input.decInput.val("");
+            this.input.uniInput.val("");
         } else {
             this.input.hexInput.val(character.hex);
             this.input.decInput.val(character.dec);
+            this.input.uniInput.val(character.text);
 
             this.checkInputsForErrors(character);
         }
 
-        this.displayOutput.html(character.text);
+        this.displayOutput.html(character.text.charAt(0));
     }
 
     displayFont(font: Font) {
+        this.input.uniInput.css("font-family", font.font);
         this.displayOutput.css("font-family", font.font);
         this.fontOutput.css("font-family", font.font);
 
@@ -134,6 +159,8 @@ class DisplayHandler {
             this.checkForError(this.input.hexInput.parent().parent(), character.hasError);
         } else if (character.entryType === EntryType.Dec) {
             this.checkForError(this.input.decInput.parent().parent(), character.hasError);
+        } else if (character.entryType === EntryType.Text) {
+            this.checkForError(this.input.uniInput.parent().parent(), character.hasError);
         }
     }
 
@@ -285,7 +312,7 @@ getUnicodeParser();
 
 function getUnicodeParser() {
     "use strict";
-    var input = new InputHandler($("#hexInput"), $("#decInput"), $("#fontInput"));
+    var input = new InputHandler($("#hexInput"), $("#decInput"), $("#uniInput"), $("#fontInput"));
     var display = new DisplayHandler($("#characterDisplay"), $("#fontDisplay"), input);
 
     return new UnicodeParser(input, display);
