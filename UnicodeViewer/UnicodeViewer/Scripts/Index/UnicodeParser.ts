@@ -135,11 +135,6 @@ class DisplayHandler {
 
     displayFont(font: Font) {
         this.fontElements.css("font-family", font.font);
-
-        //this.input.uniInput.css("font-family", font.font);
-        //this.displayOutput.css("font-family", font.font);
-        //this.fontOutput.css("font-family", font.font);
-
         var fonts = font.font.split(",");
         if (fonts.length > 1) {
             this.fontOutput.html("Attempting to display with " + fonts[0] +
