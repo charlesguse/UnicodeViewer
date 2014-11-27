@@ -60,6 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Index.css" />
+    <Content Include="Content\Index.min.css">
+      <DependentUpon>Index.css</DependentUpon>
+    </Content>
     <Content Include="Scripts\Index.min.js.map">
       <DependentUpon>Index.min.js</DependentUpon>
     </Content>
