@@ -1,6 +1,0 @@
-C:\sandbox\UnicodeViewer\UnicodeViewer\UnicodeViewer\bin\UnicodeViewer.dll.config
-C:\sandbox\UnicodeViewer\UnicodeViewer\UnicodeViewer\bin\UnicodeViewer.dll
-C:\sandbox\UnicodeViewer\UnicodeViewer\UnicodeViewer\bin\UnicodeViewer.pdb
-C:\sandbox\UnicodeViewer\UnicodeViewer\UnicodeViewer\obj\Debug\UnicodeViewer.csprojResolveAssemblyReference.cache
-C:\sandbox\UnicodeViewer\UnicodeViewer\UnicodeViewer\obj\Debug\UnicodeViewer.dll
-C:\sandbox\UnicodeViewer\UnicodeViewer\UnicodeViewer\obj\Debug\UnicodeViewer.pdb
