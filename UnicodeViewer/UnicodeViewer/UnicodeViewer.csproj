@@ -59,6 +59,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Index.css" />
     <Content Include="Scripts\Index.min.js.map">
       <DependentUpon>Index.min.js</DependentUpon>
     </Content>
