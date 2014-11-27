@@ -111,7 +111,7 @@ class InputHandler {
 }
 
 class DisplayHandler {
-    constructor(private displayOutput: JQuery, private fontOutput: JQuery, private input: InputHandler) { }
+    constructor(private displayOutput: JQuery, private fontOutput: JQuery, private fontElements: JQuery, private input: InputHandler) { }
 
     display(character: UnicodeCharacter) {
 
@@ -134,9 +134,11 @@ class DisplayHandler {
     }
 
     displayFont(font: Font) {
-        this.input.uniInput.css("font-family", font.font);
-        this.displayOutput.css("font-family", font.font);
-        this.fontOutput.css("font-family", font.font);
+        this.fontElements.css("font-family", font.font);
+
+        //this.input.uniInput.css("font-family", font.font);
+        //this.displayOutput.css("font-family", font.font);
+        //this.fontOutput.css("font-family", font.font);
 
         var fonts = font.font.split(",");
         if (fonts.length > 1) {
@@ -313,7 +315,7 @@ getUnicodeParser();
 function getUnicodeParser() {
     "use strict";
     var input = new InputHandler($("#hexInput"), $("#decInput"), $("#uniInput"), $("#fontInput"));
-    var display = new DisplayHandler($("#characterDisplay"), $("#fontDisplay"), input);
+    var display = new DisplayHandler($("#characterDisplay"), $("#fontDisplay"), $(".unicode-font-choice"), input);
 
     return new UnicodeParser(input, display);
 }

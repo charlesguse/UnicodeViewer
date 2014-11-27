@@ -127,9 +127,10 @@ var InputHandler = (function () {
 })();
 
 var DisplayHandler = (function () {
-    function DisplayHandler(displayOutput, fontOutput, input) {
+    function DisplayHandler(displayOutput, fontOutput, fontElements, input) {
         this.displayOutput = displayOutput;
         this.fontOutput = fontOutput;
+        this.fontElements = fontElements;
         this.input = input;
     }
     DisplayHandler.prototype.display = function (character) {
@@ -152,10 +153,11 @@ var DisplayHandler = (function () {
     };
 
     DisplayHandler.prototype.displayFont = function (font) {
-        this.input.uniInput.css("font-family", font.font);
-        this.displayOutput.css("font-family", font.font);
-        this.fontOutput.css("font-family", font.font);
+        this.fontElements.css("font-family", font.font);
 
+        //this.input.uniInput.css("font-family", font.font);
+        //this.displayOutput.css("font-family", font.font);
+        //this.fontOutput.css("font-family", font.font);
         var fonts = font.font.split(",");
         if (fonts.length > 1) {
             this.fontOutput.html("Attempting to display with " + fonts[0] + ". Your browser will use a fallback if " + fonts[0] + " does not exist.");
@@ -347,7 +349,7 @@ getUnicodeParser();
 function getUnicodeParser() {
     "use strict";
     var input = new InputHandler($("#hexInput"), $("#decInput"), $("#uniInput"), $("#fontInput"));
-    var display = new DisplayHandler($("#characterDisplay"), $("#fontDisplay"), input);
+    var display = new DisplayHandler($("#characterDisplay"), $("#fontDisplay"), $(".unicode-font-choice"), input);
 
     return new UnicodeParser(input, display);
 }
