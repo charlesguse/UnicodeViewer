@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnicodeViewer", "UnicodeViewer\UnicodeViewer.csproj", "{5EBEC157-5260-4F2B-8F62-1FC642417ECB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnicodeTableGenerator", "UnicodeTableGenerator\UnicodeTableGenerator.csproj", "{04CA0694-EAA0-4399-BCDE-F4711B097592}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{5EBEC157-5260-4F2B-8F62-1FC642417ECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EBEC157-5260-4F2B-8F62-1FC642417ECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EBEC157-5260-4F2B-8F62-1FC642417ECB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04CA0694-EAA0-4399-BCDE-F4711B097592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04CA0694-EAA0-4399-BCDE-F4711B097592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04CA0694-EAA0-4399-BCDE-F4711B097592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04CA0694-EAA0-4399-BCDE-F4711B097592}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
