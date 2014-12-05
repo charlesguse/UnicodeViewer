@@ -29,38 +29,3 @@ label {
     font-size: 20px;
     font-family: 'IM Fell English SC', serif;
 }
-
-/* http://stackoverflow.com/questions/21168521/scrollable-table-with-fixed-header-in-bootstrap */
-table {
-        width: 100%;
-    }
-
-thead, tbody, tr, td, th { display: block; }
-
-tr:after {
-    content: ' ';
-    display: block;
-    visibility: hidden;
-    clear: both;
-}
-
-thead th {
-    height: 30px;
-
-    /*text-align: left;*/
-}
-
-tbody {
-    height: 300px;
-    overflow-y: auto;
-}
-
-thead {
-    /* fallback */
-}
-
-
-tbody td, thead th {
-    width: 19.2%;
-    float: left;
-}
