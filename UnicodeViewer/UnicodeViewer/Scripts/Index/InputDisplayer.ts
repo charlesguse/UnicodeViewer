@@ -1,7 +1,9 @@
-﻿class DisplayHandler {
-    constructor(private displayOutput: JQuery, private fontOutput: JQuery, private fontElements: JQuery, private input: InputHandler) { }
+﻿class InputDisplayer extends Displayer {
+    constructor(private displayOutput: JQuery, private input: InputHandler) {
+        super();
+    }
 
-    display(character: UnicodeCharacter) {
+    public display(character: UnicodeCharacter) {
 
         if (character.entryType === EntryType.Default) {
             this.input.hexInput.attr("placeholder", character.hex);
@@ -21,39 +23,13 @@
         this.displayOutput.html(character.text.charAt(0));
     }
 
-    displayFont(font: UnicodeFont) {
-        this.fontElements.css("font-family", font.font);
-        var fonts = font.font.split(",");
-        if (fonts.length > 1) {
-            this.fontOutput.html("Attempting to display with " + fonts[0] +
-                ". Your browser will use a fallback if " + fonts[0] + " does not exist.");
-        } else {
-            this.fontOutput.html("<br/>");
-        }
-
-        this.checkFontInputForError(font);
-    }
-
-    checkFontInputForError(font: UnicodeFont) {
-        this.checkForError(this.input.fontInput.parent().parent(), font.hasError);
-    }
-
-
-    checkInputsForErrors(character: UnicodeCharacter) {
+    private checkInputsForErrors(character: UnicodeCharacter) {
         if (character.entryType === EntryType.Hex) {
             this.checkForError(this.input.hexInput.parent().parent(), character.hasError);
         } else if (character.entryType === EntryType.Dec) {
             this.checkForError(this.input.decInput.parent().parent(), character.hasError);
         } else if (character.entryType === EntryType.Text) {
             this.checkForError(this.input.uniInput.parent().parent(), character.hasError);
-        }
-    }
-
-    checkForError(input: JQuery, error: boolean) {
-        if (error) {
-            input.addClass("has-error");
-        } else {
-            input.removeClass("has-error");
         }
     }
 }

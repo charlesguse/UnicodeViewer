@@ -1,11 +1,82 @@
-﻿var DisplayHandler = (function () {
-    function DisplayHandler(displayOutput, fontOutput, fontElements, input) {
-        this.displayOutput = displayOutput;
+﻿var Displayer = (function () {
+    function Displayer() {
+    }
+    Displayer.prototype.checkForError = function (input, error) {
+        if (error) {
+            input.addClass("has-error");
+        } else {
+            input.removeClass("has-error");
+        }
+    };
+    return Displayer;
+})();
+var EntryType;
+(function (EntryType) {
+    EntryType[EntryType["Dec"] = 0] = "Dec";
+    EntryType[EntryType["Hex"] = 1] = "Hex";
+    EntryType[EntryType["Text"] = 2] = "Text";
+    EntryType[EntryType["Default"] = 3] = "Default";
+})(EntryType || (EntryType = {}));
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var FontDisplayer = (function (_super) {
+    __extends(FontDisplayer, _super);
+    function FontDisplayer(fontOutput, fontElements, handler) {
+        _super.call(this);
         this.fontOutput = fontOutput;
         this.fontElements = fontElements;
+        this.handler = handler;
+    }
+    FontDisplayer.prototype.display = function (font) {
+        this.fontElements.css("font-family", font.font);
+        var fonts = font.font.split(",");
+        if (fonts.length > 1) {
+            this.fontOutput.html("Attempting to display with " + fonts[0] + ". Your browser will use a fallback if " + fonts[0] + " does not exist.");
+        } else {
+            this.fontOutput.html("<br/>");
+        }
+
+        this.checkFontInputForError(font);
+    };
+
+    FontDisplayer.prototype.checkFontInputForError = function (font) {
+        this.checkForError(this.handler.fontInput.parent().parent(), font.hasError);
+    };
+    return FontDisplayer;
+})(Displayer);
+var FontHandler = (function () {
+    function FontHandler(fontInput) {
+        this.fontInput = fontInput;
+    }
+    FontHandler.prototype.bindFontInput = function (callback) {
+        this.bindInput(this.fontInput, callback);
+    };
+
+    FontHandler.prototype.bindInput = function (input, callback) {
+        input.on("keyup bind cut copy paste", function () {
+            return setTimeout(function () {
+                return callback();
+            }, 100);
+        });
+    };
+
+    FontHandler.prototype.getFont = function () {
+        return new UnicodeFont(this.fontInput);
+    };
+    return FontHandler;
+})();
+var InputDisplayer = (function (_super) {
+    __extends(InputDisplayer, _super);
+    function InputDisplayer(displayOutput, input) {
+        _super.call(this);
+        this.displayOutput = displayOutput;
         this.input = input;
     }
-    DisplayHandler.prototype.display = function (character) {
+    InputDisplayer.prototype.display = function (character) {
         if (character.entryType === 3 /* Default */) {
             this.input.hexInput.attr("placeholder", character.hex);
             this.input.decInput.attr("placeholder", character.dec);
@@ -24,23 +95,7 @@
         this.displayOutput.html(character.text.charAt(0));
     };
 
-    DisplayHandler.prototype.displayFont = function (font) {
-        this.fontElements.css("font-family", font.font);
-        var fonts = font.font.split(",");
-        if (fonts.length > 1) {
-            this.fontOutput.html("Attempting to display with " + fonts[0] + ". Your browser will use a fallback if " + fonts[0] + " does not exist.");
-        } else {
-            this.fontOutput.html("<br/>");
-        }
-
-        this.checkFontInputForError(font);
-    };
-
-    DisplayHandler.prototype.checkFontInputForError = function (font) {
-        this.checkForError(this.input.fontInput.parent().parent(), font.hasError);
-    };
-
-    DisplayHandler.prototype.checkInputsForErrors = function (character) {
+    InputDisplayer.prototype.checkInputsForErrors = function (character) {
         if (character.entryType === 1 /* Hex */) {
             this.checkForError(this.input.hexInput.parent().parent(), character.hasError);
         } else if (character.entryType === 0 /* Dec */) {
@@ -49,29 +104,13 @@
             this.checkForError(this.input.uniInput.parent().parent(), character.hasError);
         }
     };
-
-    DisplayHandler.prototype.checkForError = function (input, error) {
-        if (error) {
-            input.addClass("has-error");
-        } else {
-            input.removeClass("has-error");
-        }
-    };
-    return DisplayHandler;
-})();
-var EntryType;
-(function (EntryType) {
-    EntryType[EntryType["Dec"] = 0] = "Dec";
-    EntryType[EntryType["Hex"] = 1] = "Hex";
-    EntryType[EntryType["Text"] = 2] = "Text";
-    EntryType[EntryType["Default"] = 3] = "Default";
-})(EntryType || (EntryType = {}));
+    return InputDisplayer;
+})(Displayer);
 var InputHandler = (function () {
-    function InputHandler(hexInput, decInput, uniInput, fontInput) {
+    function InputHandler(hexInput, decInput, uniInput) {
         this.hexInput = hexInput;
         this.decInput = decInput;
         this.uniInput = uniInput;
-        this.fontInput = fontInput;
         this.defaultHexCode = "2697";
     }
     InputHandler.prototype.getDefault = function () {
@@ -88,10 +127,6 @@ var InputHandler = (function () {
 
     InputHandler.prototype.bindUniInput = function (callback) {
         this.bindInput(this.uniInput, callback);
-    };
-
-    InputHandler.prototype.bindFontInput = function (callback) {
-        this.bindInput(this.fontInput, callback);
     };
 
     InputHandler.prototype.bindInput = function (input, callback) {
@@ -137,10 +172,6 @@ var InputHandler = (function () {
 
     InputHandler.prototype.getInputLength = function (element) {
         return element.val().length;
-    };
-
-    InputHandler.prototype.getFont = function () {
-        return new UnicodeFont(this.fontInput);
     };
     return InputHandler;
 })();
@@ -285,28 +316,34 @@ var UnicodeFont = (function () {
     return UnicodeFont;
 })();
 var UnicodeParser = (function () {
-    function UnicodeParser(input, display) {
+    function UnicodeParser(input, display, fontInput, fontDisplay) {
         this.input = input;
         this.display = display;
+        this.fontInput = fontInput;
+        this.fontDisplay = fontDisplay;
         this.initBindings();
-        var defaultCharacter = this.input.getDefault();
-        this.display.display(defaultCharacter);
 
-        var font = this.input.getFont();
-        this.display.displayFont(font);
+        if (this.hasInputHandlerAndDisplayer()) {
+            var defaultCharacter = this.input.getDefault();
+            this.display.display(defaultCharacter);
+        }
+        var font = this.fontInput.getFont();
+        this.fontDisplay.display(font);
     }
     UnicodeParser.prototype.initBindings = function () {
         var _this = this;
-        this.input.bindHexInput(function () {
-            return _this.onHexInputKeyUp();
-        });
-        this.input.bindDecInput(function () {
-            return _this.onDecInputKeyUp();
-        });
-        this.input.bindUniInput(function () {
-            return _this.onUniInputKeyUp();
-        });
-        this.input.bindFontInput(function () {
+        if (this.hasInputHandlerAndDisplayer()) {
+            this.input.bindHexInput(function () {
+                return _this.onHexInputKeyUp();
+            });
+            this.input.bindDecInput(function () {
+                return _this.onDecInputKeyUp();
+            });
+            this.input.bindUniInput(function () {
+                return _this.onUniInputKeyUp();
+            });
+        }
+        this.fontInput.bindFontInput(function () {
             return _this.onFontInputKeyUp();
         });
     };
@@ -327,8 +364,12 @@ var UnicodeParser = (function () {
     };
 
     UnicodeParser.prototype.onFontInputKeyUp = function () {
-        var font = this.input.getFont();
-        this.display.displayFont(font);
+        var font = this.fontInput.getFont();
+        this.fontDisplay.display(font);
+    };
+
+    UnicodeParser.prototype.hasInputHandlerAndDisplayer = function () {
+        return this.input != null && this.display != null;
     };
     return UnicodeParser;
 })();

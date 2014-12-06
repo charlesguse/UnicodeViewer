@@ -1,7 +1,7 @@
 ﻿class InputHandler {
     private defaultHexCode = "2697";
 
-    constructor(public hexInput: JQuery, public decInput: JQuery, public uniInput: JQuery, public fontInput: JQuery) {
+    constructor(public hexInput: JQuery, public decInput: JQuery, public uniInput: JQuery) {
 
     }
 
@@ -19,10 +19,6 @@
 
     public bindUniInput(callback: Function) {
         this.bindInput(this.uniInput, callback);
-    }
-
-    public bindFontInput(callback: Function) {
-        this.bindInput(this.fontInput, callback);
     }
 
     private bindInput(input: JQuery, callback: Function) {
@@ -64,10 +60,5 @@
 
     getInputLength(element: JQuery) {
         return (<string>element.val()).length;
-    }
-
-
-    getFont(): UnicodeFont {
-        return new UnicodeFont(this.fontInput);
     }
 }

@@ -1,37 +1,45 @@
 ﻿class UnicodeParser {
-    constructor(private input: InputHandler, private display: DisplayHandler) {
+    constructor(private input: InputHandler, private display: InputDisplayer, private fontInput: FontHandler, private fontDisplay: FontDisplayer) {
         this.initBindings();
-        var defaultCharacter = this.input.getDefault();
-        this.display.display(defaultCharacter);
 
-        var font = this.input.getFont();
-        this.display.displayFont(font);
+        if (this.hasInputHandlerAndDisplayer()) {
+            var defaultCharacter = this.input.getDefault();
+            this.display.display(defaultCharacter);
+        }
+        var font = this.fontInput.getFont();
+        this.fontDisplay.display(font);
     }
 
-    initBindings() {
-        this.input.bindHexInput(() => this.onHexInputKeyUp());
-        this.input.bindDecInput(() => this.onDecInputKeyUp());
-        this.input.bindUniInput(() => this.onUniInputKeyUp());
-        this.input.bindFontInput(() => this.onFontInputKeyUp());
+    private initBindings() {
+        if (this.hasInputHandlerAndDisplayer()) {
+            this.input.bindHexInput(() => this.onHexInputKeyUp());
+            this.input.bindDecInput(() => this.onDecInputKeyUp());
+            this.input.bindUniInput(() => this.onUniInputKeyUp());
+        }
+        this.fontInput.bindFontInput(() => this.onFontInputKeyUp());
     }
 
-    onHexInputKeyUp() {
+    private onHexInputKeyUp() {
         var character = this.input.parseHexCodeToUse();
         this.display.display(character);
     }
 
-    onDecInputKeyUp() {
+    private onDecInputKeyUp() {
         var character = this.input.parseDecCodeToUse();
         this.display.display(character);
     }
 
-    onUniInputKeyUp() {
+    private onUniInputKeyUp() {
         var character = this.input.parseUnicodeToUse();
         this.display.display(character);
     }
 
-    onFontInputKeyUp() {
-        var font = this.input.getFont();
-        this.display.displayFont(font);
+    private onFontInputKeyUp() {
+        var font = this.fontInput.getFont();
+        this.fontDisplay.display(font);
+    }
+
+    private hasInputHandlerAndDisplayer() {
+        return this.input != null && this.display != null;
     }
 }
