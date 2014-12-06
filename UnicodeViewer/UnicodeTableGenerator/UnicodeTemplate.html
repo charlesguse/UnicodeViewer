@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>⚗ - {0}</title>
+        <link rel="stylesheet" type="text/css" href="Content/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="Content/Index.min.css" />
+        
+        <script src="Scripts/jquery-2.1.1.min.js"></script>
+        <script src="Scripts/bootstrap.min.js"></script>
+        <script src="Scripts/jquery.floatThead.min.js"></script>
+        <script src="Scripts/Index.min.js"></script>
+        <script src="Scripts/ga.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <ul class="pager">
+                <li class="previous{1}"><a href="{2}">← {3}</a></li>
+                <li class="center-block"><a href="/">Unicode Alchemy <span class="unicode-font-choice">⚗</span></a></li>
+                <li class="next{4}"><a href="{5}">{6} →</a></li>
+            </ul>
+            <h1 class="text-center">{0}</h1>
+            <div class="row">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-xs-4 col-xs-offset-2 col-sm-3 col-sm-offset-2 control-label">Font</label>
+                            <div class="col-xs-5 col-sm-2">
+                                <input type="text" id="fontInput" class="form-control unicode-font-choice">
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col-xs-offset-3 col-xs-6">
+                    <div id="fontDisplay" class="unicode-font-choice"><br /></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-offset-3 col-xs-6">
+                    <table class="table unicode-font-choice table-striped text-center">
+                        <thead>
+                            <tr style="background-color: #FFF">
+                                <th class="text-center">Hexadecimal</th>
+                                <th class="text-center">Decimal</th>
+                                <th class="text-center">Unicode</th>
+                                <th class="text-center">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+{7}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script>
+    getUnicodeParser();
+
+    function getUnicodeParser() {{
+        "use strict";
+        var fontInput = new FontHandler($("#fontInput"));
+        var fontDisplay = new FontDisplayer($("#fontDisplay"), $(".unicode-font-choice"), fontInput);
+
+        return new UnicodeParser(null, null, fontInput, fontDisplay);
+    }}
+
+    $('table.unicode-font-choice').floatThead({{
+        useAbsolutePositioning: false
+    }});
+</script>

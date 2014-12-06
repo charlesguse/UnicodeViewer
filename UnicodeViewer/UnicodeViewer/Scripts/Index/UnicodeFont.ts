@@ -1,5 +1,5 @@
 ﻿class UnicodeFont {
-    private defaultFonts = "Segoe UI Symbol";// ", Lucida Grande, Unifont";
+    private defaultFonts = "Cambria Math, Segoe UI Symbol";// ", Lucida Grande, Unifont";
     // reSharper disable InconsistentNaming
     private _font: string
     private _hasError: boolean
@@ -7,6 +7,14 @@
 
     public get font() {
         return this._font;
+    }
+
+    public get displayFont() {
+        if (this.font != this.defaultFonts) {
+            var fonts = this.font.split(",");
+            return fonts[0];
+        }
+        return "";
     }
 
     public get hasError() {

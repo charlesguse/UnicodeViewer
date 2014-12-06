@@ -33,11 +33,10 @@ var FontDisplayer = (function (_super) {
     }
     FontDisplayer.prototype.display = function (font) {
         this.fontElements.css("font-family", font.font);
-        var fonts = font.font.split(",");
-        if (fonts.length > 1) {
-            this.fontOutput.html("Attempting to display with " + fonts[0] + ". Your browser will use a fallback if " + fonts[0] + " does not exist.");
+        if (font.displayFont != "") {
+            this.fontOutput.html("Attempting to display with " + font.displayFont + ". Your browser will use a fallback if " + font.displayFont + " does not exist.");
         } else {
-            this.fontOutput.html("<br/>");
+            this.fontOutput.html("<br />");
         }
 
         this.checkFontInputForError(font);
@@ -179,6 +178,7 @@ var UnicodeCharacter = (function () {
     function UnicodeCharacter() {
     }
     Object.defineProperty(UnicodeCharacter.prototype, "dec", {
+        // reSharper restore InconsistentNaming
         get: function () {
             return this._dec;
         },
@@ -263,7 +263,7 @@ var UnicodeCharacter = (function () {
 })();
 var UnicodeFont = (function () {
     function UnicodeFont(fontInput) {
-        this.defaultFonts = "Segoe UI Symbol";
+        this.defaultFonts = "Cambria Math, Segoe UI Symbol";
         var fontLength = this.getInputLength(fontInput);
         var fontExists = this.doesFontExist(fontInput.val());
 
@@ -274,8 +274,21 @@ var UnicodeFont = (function () {
         this._hasError = fontLength > 0 && !fontExists;
     }
     Object.defineProperty(UnicodeFont.prototype, "font", {
+        // reSharper restore InconsistentNaming
         get: function () {
             return this._font;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(UnicodeFont.prototype, "displayFont", {
+        get: function () {
+            if (this.font != this.defaultFonts) {
+                var fonts = this.font.split(",");
+                return fonts[0];
+            }
+            return "";
         },
         enumerable: true,
         configurable: true
@@ -373,3 +386,4 @@ var UnicodeParser = (function () {
     };
     return UnicodeParser;
 })();
+//# sourceMappingURL=Index.js.map

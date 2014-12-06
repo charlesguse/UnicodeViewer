@@ -40,6 +40,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="1.html" />
+    <Content Include="10.html" />
+    <Content Include="11.html" />
+    <Content Include="2.html" />
+    <Content Include="3.html" />
+    <Content Include="4.html" />
+    <Content Include="5.html" />
+    <Content Include="6.html" />
+    <Content Include="7.html" />
+    <Content Include="8.html" />
+    <Content Include="9.html" />
     <Content Include="Content\Index.css" />
     <Content Include="Content\Index.min.css">
       <DependentUpon>Index.css</DependentUpon>
@@ -48,6 +59,7 @@
     <Content Include="Content\Table.min.css">
       <DependentUpon>Table.css</DependentUpon>
     </Content>
+    <Content Include="Scripts\ga.min.js" />
     <Content Include="Scripts\Index.min.js.map">
       <DependentUpon>Index.min.js</DependentUpon>
     </Content>
@@ -77,7 +89,6 @@
     <Content Include="Scripts\jquery.floatThead.min.js" />
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\jquery-2.1.1.min.map" />
-    <Content Include="Unicode0.html" />
     <Content Include="Web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
