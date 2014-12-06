@@ -178,7 +178,6 @@ var UnicodeCharacter = (function () {
     function UnicodeCharacter() {
     }
     Object.defineProperty(UnicodeCharacter.prototype, "dec", {
-        // reSharper restore InconsistentNaming
         get: function () {
             return this._dec;
         },
@@ -274,7 +273,6 @@ var UnicodeFont = (function () {
         this._hasError = fontLength > 0 && !fontExists;
     }
     Object.defineProperty(UnicodeFont.prototype, "font", {
-        // reSharper restore InconsistentNaming
         get: function () {
             return this._font;
         },
@@ -284,7 +282,7 @@ var UnicodeFont = (function () {
 
     Object.defineProperty(UnicodeFont.prototype, "displayFont", {
         get: function () {
-            if (this.font != this.defaultFonts) {
+            if (this.font !== this.defaultFonts) {
                 var fonts = this.font.split(",");
                 return fonts[0];
             }
@@ -386,4 +384,3 @@ var UnicodeParser = (function () {
     };
     return UnicodeParser;
 })();
-//# sourceMappingURL=Index.js.map

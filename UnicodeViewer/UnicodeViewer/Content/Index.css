@@ -1,8 +1,4 @@
-﻿.unicode-font-choice {
-    font-family: 'Cambria Math', 'Segoe UI Symbol';
-}
-
-/* http://stackoverflow.com/questions/6900124/make-some-text-unselectable-with-css */
+﻿/* http://stackoverflow.com/questions/6900124/make-some-text-unselectable-with-css */
 /*.unselectable {
     -webkit-user-select: none;
     -moz-user-select: none;

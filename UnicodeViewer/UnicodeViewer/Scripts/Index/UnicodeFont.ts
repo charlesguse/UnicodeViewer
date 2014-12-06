@@ -10,7 +10,7 @@
     }
 
     public get displayFont() {
-        if (this.font != this.defaultFonts) {
+        if (this.font !== this.defaultFonts) {
             var fonts = this.font.split(",");
             return fonts[0];
         }

@@ -5,21 +5,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>⚗ - U+F900 - U+102FB</title>
         <link rel="stylesheet" type="text/css" href="Content/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="Content/Index.min.css" />
+        <link rel="stylesheet" type="text/css" href="Content/font.min.css" />
         
         <script src="Scripts/jquery-2.1.1.min.js"></script>
         <script src="Scripts/bootstrap.min.js"></script>
-        <script src="Scripts/jquery.floatThead.min.js"></script>
-        <script src="Scripts/Index.min.js"></script>
         <script src="Scripts/ga.min.js"></script>
     </head>
     <body>
         <div class="container">
-            <ul class="pager">
-                <li class="previous"><a href="6.html">← U+A001 - U+F8FF</a></li>
-                <li class="center-block"><a href="/">Unicode Alchemy <span class="unicode-font-choice">⚗</span></a></li>
-                <li class="next"><a href="8.html">U+10300 - U+11AF8 →</a></li>
-            </ul>
+            <div class="row">
+                <ul class="pager">
+                    <li class="previous col-xs-4"><a href="6.html">← U+A001 - U+F8FF</a></li>
+                    <li class="center-block col-xs-4"><a href="/">Unicode Alchemy <span class="unicode-font-choice">⚗</span></a></li>
+                    <li class="next col-xs-4"><a href="8.html">U+10300 - U+11AF8 →</a></li>
+                </ul>
+            </div>
             <h1 class="text-center">U+F900 - U+102FB</h1>
             <div class="row">
                 <form class="form-horizontal">
@@ -39,8 +39,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-offset-3 col-xs-6">
-                    <table class="table unicode-font-choice table-striped text-center">
+                <div class="col-sm-offset-3 col-xs-6">
+                    <table class="table table-striped text-center">
                         <thead>
                             <tr style="background-color: #FFF">
                                 <th class="text-center">Hexadecimal</th>
@@ -49,8 +49,8 @@
                                 <th class="text-center">Description</th>
                             </tr>
                         </thead>
-                        <tbody>
-<tr><td>U+F900</td><td>63744</td><td>豈</td><td>cjk compatibility ideograph-f900</td></tr>
+                        <tbody class="unicode-font-choice">
+                            <tr><td>U+F900</td><td>63744</td><td>豈</td><td>cjk compatibility ideograph-f900</td></tr>
 <tr><td>U+F901</td><td>63745</td><td>更</td><td>cjk compatibility ideograph-f901</td></tr>
 <tr><td>U+F902</td><td>63746</td><td>車</td><td>cjk compatibility ideograph-f902</td></tr>
 <tr><td>U+F903</td><td>63747</td><td>賈</td><td>cjk compatibility ideograph-f903</td></tr>
@@ -2179,6 +2179,8 @@
     </body>
 </html>
 
+<script src="Scripts/jquery.floatThead.min.js"></script>
+<script src="Scripts/index.min.js"></script>
 <script>
     getUnicodeParser();
 
@@ -2190,7 +2192,7 @@
         return new UnicodeParser(null, null, fontInput, fontDisplay);
     }
 
-    $('table.unicode-font-choice').floatThead({
+    $('table').floatThead({
         useAbsolutePositioning: false
     });
 </script>

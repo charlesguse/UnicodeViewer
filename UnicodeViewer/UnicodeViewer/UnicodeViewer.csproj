@@ -51,18 +51,15 @@
     <Content Include="7.html" />
     <Content Include="8.html" />
     <Content Include="9.html" />
-    <Content Include="Content\Index.css" />
-    <Content Include="Content\Index.min.css">
-      <DependentUpon>Index.css</DependentUpon>
+    <Content Include="Content\font.css" />
+    <Content Include="Content\font.min.css">
+      <DependentUpon>font.css</DependentUpon>
     </Content>
-    <Content Include="Content\Table.css" />
-    <Content Include="Content\Table.min.css">
-      <DependentUpon>Table.css</DependentUpon>
+    <Content Include="Content\index.css" />
+    <Content Include="Content\index.min.css">
+      <DependentUpon>index.css</DependentUpon>
     </Content>
     <Content Include="Scripts\ga.min.js" />
-    <Content Include="Scripts\Index.min.js.map">
-      <DependentUpon>Index.min.js</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -77,12 +74,16 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Scripts\index.js.map" />
+    <Content Include="Scripts\index.min.js.map">
+      <DependentUpon>index.min.js</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\Index.js" />
-    <Content Include="Scripts\Index.min.js">
-      <DependentUpon>Index.js</DependentUpon>
+    <Content Include="Scripts\index.js" />
+    <Content Include="Scripts\index.min.js">
+      <DependentUpon>index.js</DependentUpon>
     </Content>
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
@@ -120,7 +121,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
-    <TypeScriptOutFile>Scripts\Index.js</TypeScriptOutFile>
+    <TypeScriptOutFile>Scripts\index.js</TypeScriptOutFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>

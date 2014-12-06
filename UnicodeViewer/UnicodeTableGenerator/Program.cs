@@ -113,7 +113,7 @@ namespace UnicodeTableGenerator
         public HtmlPage(int index, int first, int last)
         {
             TableRows = new StringBuilder();
-            Title = string.Format("U+{0} - U+{1}", first.ToString("X"), last.ToString("X"));
+            Title = string.Format("U+{0} - U+{1}", first.ToString("X4"), last.ToString("X4"));
             Index = index;
         }
 
