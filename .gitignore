@@ -1,0 +1,13 @@
+*.suo
+*.user
+bin/*
+obj/*
+TestResults/*
+*.ncrunchproject
+*.ncrunchsolution
+*.crunchsolution.cache
+*.Debug.cachefile
+*.Release.cachefile
+packages/*
+*.mdf
+*.ldf
